@@ -15,7 +15,7 @@ app = FastAPI()
 # Allow requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://attila1231.github.io/fitnessgpt.github.io/"],  # Or replace with ["http://localhost:3000"] or whatever your frontend URL is
+    allow_origins=["*"],  # Or replace with ["http://localhost:3000"] or whatever your frontend URL is
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
