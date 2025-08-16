@@ -177,7 +177,7 @@ async def chat(input: ChatInput):
     # Call the model
     try:
         response = client.chat.completions.create(
-            model="gpt-5-mini-2025-08-07",
+            model="gpt-5-2025-08-07",
             messages=msgs,
             
         )
@@ -206,7 +206,7 @@ def _image_file_to_data_url(data: bytes) -> str:
     b64 = base64.b64encode(data).decode("utf-8")
     return f"data:image/{ext};base64,{b64}"
 
-def _openai_vision_chat(messages: List[Dict[str, Any]], model: str = "gpt-5-mini-2025-08-07") -> str:
+def _openai_vision_chat(messages: List[Dict[str, Any]], model: str = "gpt-5-2025-08-07") -> str:
     """
     Sends a multimodal chat request (text + image data URL) and returns assistant text.
     """
