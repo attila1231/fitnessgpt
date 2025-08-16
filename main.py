@@ -7,7 +7,7 @@ from typing import List, Dict, Any
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-import imghdr
+import filetype
 import base64
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, List, Dict, Any
@@ -193,7 +193,7 @@ async def chat(input: ChatInput):
     return {"reply": reply}
 def _ext_for_bytes(b: bytes) -> str:
     # Best-effort file type (jpg/png/webp)
-    kind = imghdr.what(None, h=b)
+    kind = filetype.guess(b)
     if kind in ("jpeg", "jpg"):
         return "jpeg"
     if kind in ("png", "webp"):
