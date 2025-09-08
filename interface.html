@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>FitnessGPT</title>
+  <link rel="icon" type="image/x-icon" href="fitnessgpt.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo">FitnessGPT</div>
+      <button class="mode-btn active" data-mode="chat">💬 <span>Chat</span></button>
+      <button class="mode-btn" data-mode="meal">🍽️ <span>Meal Analyzer</span></button>
+      <button class="mode-btn" data-mode="physique">🏋️ <span>Physique Analyzer</span></button>
+      <button class="mode-btn" data-mode="profile">🤵 <span>Your profile</span></button>
+      <div class="hint">FitnessGPT can make mistakes.</div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar"><div class="title" id="title">Chat</div></div>
+
+      <!-- CHAT VIEW -->
+      <section id="chat-view" class="view active">
+        <div id="chatbox">
+          <div id="greeting"><b>Welcome to FitnessGPT :)</b></div>
+        </div>
+        <div id="typing-indicator">FitnessGPT is thinking…</div>
+        <div id="inputbar">
+          <input id="input" placeholder="Ask FitnessGPT anything" />
+          <button id="send">Send</button>
+        </div>
+      </section>
+
+      <!-- MEAL ANALYZER -->
+      <section id="meal-view" class="view">
+        <div class="panel">
+          <div class="card" style="max-width:420px;">
+            <h3>Upload Meal Photo</h3>
+            <div class="preview" id="meal-preview">No image selected</div>
+            <div class="field">
+              <input type="file" id="meal-file" accept="image/*">
+            </div>
+            <div class="field">
+              <label>Goal</label>
+              <select id="meal-goal">
+                <option>balanced</option>
+                <option>fat loss</option>
+                <option>muscle gain</option>
+                <option>keto</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Allergies (comma-separated)</label>
+              <input id="meal-allergies" placeholder="e.g., peanuts, shellfish" />
+            </div>
+            <button class="btn" id="meal-analyze">Analyze Meal</button>
+            <div class="hint">We’ll estimate calories/macros and give a 0–10 health score.</div>
+          </div>
+
+          <div class="card">
+            <h3>Result</h3>
+            <div id="meal-score"></div>
+            <div id="meal-result" class="result">No result yet.</div>
+            <div id="meal-output">
+  <pre id="mealText"></pre>
+</div>
+          </div>
+             
+        </div>
+      </section>
+
+      <!-- PHYSIQUE ANALYZER -->
+      <section id="physique-view" class="view">
+        <div class="panel">
+          <div class="card" style="max-width:420px;">
+            <h3>Upload Physique Photo</h3>
+            <div class="preview" id="phys-preview">No image selected</div>
+            <div class="field">
+              <input type="file" id="phys-file" accept="image/*">
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Goal</label>
+                <select id="phys-goal">
+                  <option>recomposition</option>
+                  <option>fat loss</option>
+                  <option>muscle gain</option>
+                  <option>bodybuilding</option>
+                  <option>general fitness</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Sex</label>
+                <select id="phys-sex">
+                  <option>unspecified</option>
+                  <option>male</option>
+                  <option>female</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Height (cm)</label>
+                <input type="number" id="phys-height" placeholder="e.g., 180">
+              </div>
+              <div class="field">
+                <label>Weight (kg)</label>
+                <input type="number" id="phys-weight" placeholder="e.g., 78">
+              </div>
+            </div>
+            <button class="btn" id="phys-analyze">Rate Physique</button>
+            <div class="hint">The photos are immediately deleted after being analyzed.</div>
+          </div>
+
+          <div class="card">
+            <h3>Result</h3>
+            <div id="phys-score"></div>
+            <div id="phys-result" class="result">No result yet.</div>
+          </div>
+        </div>
+      </section>
+      <!-- FITNESS PROFILE -->
+       <section id="profile-view" class="view">
+      <div id="profile-card" class="card">
+  <h3>Your Fitness Profile</h3>
+
+  <div class="grid">
+    <label>Age <input id="p-age" type="number" min="10" max="100" placeholder="28"></label>
+    <label>Sex
+      <select id="p-sex">
+        <option value="">—</option>
+        <option>male</option>
+        <option>female</option>
+        <option>other</option>
+      </select>
+    </label>
+
+    <label>Height (cm) <input id="p-height" type="number" min="100" max="250" placeholder="178"></label>
+    <label>Weight (kg)  <input id="p-weight" type="number" min="30"  max="250" step="0.1" placeholder="77.5"></label>
+
+    <label>Body Fat % <input id="p-bf" type="number" min="3" max="60" step="0.1" placeholder="18"></label>
+    <label>Activity
+      <select id="p-activity">
+        <option value="">—</option>
+        <option value="sedentary">Sedentary</option>
+        <option value="light">Light (1–3x/wk)</option>
+        <option value="moderate">Moderate (3–5x/wk)</option>
+        <option value="active">Active (6–7x/wk)</option>
+        <option value="athlete">Athlete (2x/day)</option>
+      </select>
+    </label>
+
+    <label>Goal
+      <select id="p-goal">
+        <option value="balanced">Balanced</option>
+        <option value="fat_loss">Fat loss</option>
+        <option value="muscle_gain">Muscle gain</option>
+        <option value="recomp">Recomposition</option>
+      </select>
+    </label>
+    <label>Diet (optional)
+      <select id="p-diet">
+        <option value="">—</option>
+        <option>high-protein</option>
+        <option>mediterranean</option>
+        <option>vegan</option>
+        <option>vegetarian</option>
+        <option>keto</option>
+        <option>paleo</option>
+      </select>
+    </label>
+  </div>
+
+  <label>Allergies / avoid (comma-separated)
+    <input id="p-allergies" type="text" placeholder="nuts, dairy">
+  </label>
+
+  <div class="row">
+
+  </div>
+<p ><strong>the changes are automatically being saved</strong></p>
+</div>
+</section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
