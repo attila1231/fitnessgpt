@@ -1,7 +1,4 @@
 from fastapi import FastAPI, Request, UploadFile, File, Form, HTTPException
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import List, Dict, Any
 from openai import OpenAI
@@ -30,8 +27,6 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 
-# Templates setup
-templates = Jinja2Templates(directory="templates")
 
 # Conversation history per user
 conversations: Dict[str, List[Dict[str, str]]] = {}
@@ -40,15 +35,12 @@ class ChatInput(BaseModel):
     user_id: str
     message: str
 
-@app.get("/", response_class=HTMLResponse)
-async def get_chat_page(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
-@app.post("/reset")
-async def reset(input: ChatInput):
-    user_id = input.user_id
-    if user_id in conversations:
-        del conversations[user_id]
-    return {"status": "reset"}
+@app.get("/")
+def root():
+    return {"status": "ok", "service": "fitnessgpt-backend"}
+@app.get("/health")
+def health():
+    return {"ok": True}
 # store per-user profiles in memory (persist however you like)
 profiles: Dict[str, Dict[str, Any]] = {}
 PROFILE_DB_PATH = "profiles.json"
